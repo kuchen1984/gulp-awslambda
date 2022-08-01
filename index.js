@@ -122,7 +122,9 @@ module.exports = function (params, opts) {
     if (!(opts.publish && opts.alias))
       return Promise.resolve('not updating alias');
 
-    gutil.log(`Getting alias: ${opts.alias.name}`);
+    gutil.log(
+      `updating alias "${opts.alias.name}" for function "${functionName}"`
+    );
     try {
       await lambda
         .getAlias({
@@ -228,9 +230,7 @@ module.exports = function (params, opts) {
           .waitFor('functionActive', { FunctionName: functionName })
           .promise();
         printVersion(functionConfiguration);
-        gutil.log(
-          `updating alias "${opts.alias.name}" for function "${functionName}"`
-        );
+
         await updateOrCreateAlias(functionConfiguration);
         done();
       } catch (error) {
@@ -263,9 +263,6 @@ module.exports = function (params, opts) {
             .waitFor('functionActive', { FunctionName: functionName })
             .promise();
           printVersion(functionConfiguration);
-          gutil.log(
-            `updating alias "${opts.alias.name}" for function "${functionName}"`
-          );
           await updateOrCreateAlias(functionConfiguration);
           gutil.log(`waiting for update to complete...`);
           await lambda
